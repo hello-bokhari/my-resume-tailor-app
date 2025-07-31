@@ -13,8 +13,8 @@ export default async function handler(
     }
 
     try {
-      const tailoredResume = await tailorResume(resume, jobDescription);
-      res.status(200).json({ tailoredResume });
+      const result = await tailorResume(resume, jobDescription);
+      res.status(200).json(result);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Internal server error' });

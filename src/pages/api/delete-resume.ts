@@ -2,13 +2,14 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import clientPromise from '../../lib/mongodb';
 import { createServerSupabaseClient } from '../../lib/supabase';
+import { ObjectId } from 'mongodb';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method === 'POST') {
-    const { resume, jobDescription, tailoredResume } = req.body;
+  if (req.method === 'DELETE') {
+    const { id } = req.query; // Get ID from query parameter
 
     // Get user from Supabase session
     const supabase = createServerSupabaseClient(req, res);
@@ -18,8 +19,8 @@ export default async function handler(
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    if (!resume || !jobDescription || !tailoredResume) {
-      return res.status(400).json({ message: 'Missing required fields' });
+    if (!id) {
+      return res.status(400).json({ message: 'Resume ID is required' });
     }
 
     try {
@@ -27,24 +28,13 @@ export default async function handler(
       const db = client.db('resume-tailor');
       const collection = db.collection('resumes');
 
-      // Check current resume count for the user
-      const userResumes = await collection.find({ userId: user.id }).sort({ createdAt: 1 }).toArray();
+      const result = await collection.deleteOne({ _id: new ObjectId(id as string), userId: user.id });
 
-      // If more than 3, delete the oldest one
-      if (userResumes.length >= 3) {
-        const oldestResume = userResumes[0];
-        await collection.deleteOne({ _id: oldestResume._id });
+      if (result.deletedCount === 0) {
+        return res.status(404).json({ message: 'Resume not found or not authorized' });
       }
 
-      await collection.insertOne({
-        userId: user.id,
-        resume,
-        jobDescription,
-        tailoredResume,
-        createdAt: new Date(),
-      });
-
-      res.status(201).json({ message: 'Resume saved successfully' });
+      res.status(200).json({ message: 'Resume deleted successfully' });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Internal server error' });
