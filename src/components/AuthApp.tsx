@@ -3,8 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 
+import { Session } from '@supabase/supabase-js';
+
 const AuthApp = () => {
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -36,8 +38,10 @@ const AuthApp = () => {
       });
       if (error) throw error;
       setMessage('Check your email for the login link!');
-    } catch (error: any) {
-      setMessage(`Error: ${error.message}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setMessage(`Error: ${error.message}`);
+      }
     } finally {
       setLoading(false);
     }
