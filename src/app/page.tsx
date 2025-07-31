@@ -1,103 +1,109 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useEffect, useState } from "react";
+import { createClient } from "@supabase/supabase-js";
+import { Button } from "@/components/ui/button";
+import Layout from "@/components/Layout";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+export default function Dashboard() {
+  const [session, setSession] = useState<any>(null);
+  const [resume, setResume] = useState("");
+  const [jobDesc, setJobDesc] = useState("");
+  const [tailored, setTailored] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => setSession(session));
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => setSession(session));
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
+
+  const handleTailor = async () => {
+    if (!resume || !jobDesc) return;
+    setLoading(true);
+    try {
+      const response = await fetch("/api/tailor", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resume, jobDesc }),
+      });
+
+      const data = await response.json();
+      setTailored(data.result || "No response received.");
+    } catch (err) {
+      setTailored("❌ Error tailoring resume.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!session) {
+    return (
+      <Layout>
+        <h2 className="text-xl text-center">🔒 Please log in to access your dashboard.</h2>
+        <Button onClick={() => (window.location.href = "/login")} className="mt-4 w-full">
+          Go to Login
+        </Button>
+      </Layout>
+    );
+  }
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <Layout>
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold">🎯 Resume Tailor</h1>
+        <Button variant="destructive" onClick={handleLogout}>
+          Log out
+        </Button>
+      </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      <div className="grid gap-6">
+        <div>
+          <label className="text-sm font-semibold">Paste your Resume</label>
+          <textarea
+            rows={6}
+            className="textarea textarea-bordered w-full mt-1"
+            placeholder="Paste your resume text here..."
+            value={resume}
+            onChange={(e) => setResume(e.target.value)}
+          />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+
+        <div>
+          <label className="text-sm font-semibold">Paste Job Description</label>
+          <textarea
+            rows={6}
+            className="textarea textarea-bordered w-full mt-1"
+            placeholder="Paste the job description here..."
+            value={jobDesc}
+            onChange={(e) => setJobDesc(e.target.value)}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        </div>
+
+        <Button onClick={handleTailor} disabled={loading}>
+          {loading ? "Tailoring..." : "Tailor Resume"}
+        </Button>
+
+        {tailored && (
+          <div>
+            <label className="text-sm font-semibold">🎨 Tailored Resume Output</label>
+            <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-md whitespace-pre-wrap mt-2 text-sm">
+              {tailored}
+            </div>
+          </div>
+        )}
+      </div>
+    </Layout>
   );
 }
