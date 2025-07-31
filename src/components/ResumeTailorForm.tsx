@@ -6,6 +6,22 @@ export default function ResumeTailorForm() {
   const [jobDesc, setJobDesc] = useState('');
   const [output, setOutput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    const res = await fetch('/api/save-resume', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ resume, jobDescription: jobDesc, tailoredResume: output }),
+    });
+    setIsSaving(false);
+    if (res.ok) {
+      alert('Resume saved successfully!');
+    } else {
+      alert('Failed to save resume.');
+    }
+  };
 
   const handleSubmit = async () => {
     if (!resume || !jobDesc) return alert('Please fill in both fields.');
@@ -17,7 +33,7 @@ export default function ResumeTailorForm() {
       body: JSON.stringify({ resume, jobDesc }),
     });
     const data = await res.json();
-    setOutput(data?.result || 'Failed to generate output.');
+    setOutput(data?.tailoredResume || 'Failed to generate output.');
     setLoading(false);
   };
 
@@ -47,6 +63,13 @@ export default function ResumeTailorForm() {
         <div className="p-4 bg-white dark:bg-gray-900 border rounded whitespace-pre-wrap">
           <h2 className="font-semibold mb-2">🔧 Tailored Output</h2>
           <pre>{output}</pre>
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 mt-4"
+          >
+            {isSaving ? 'Saving...' : 'Save Resume'}
+          </button>
         </div>
       )}
     </div>

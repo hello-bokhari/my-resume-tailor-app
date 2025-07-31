@@ -1,12 +1,24 @@
-// src/components/Layout.tsx
-import React from 'react';
+import Link from 'next/link';
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#edf0f9] to-[#e3e3f3] dark:from-[#1a1a2e] dark:to-[#202038] text-gray-900 dark:text-white flex items-center justify-center p-6">
-      <div className="w-full max-w-xl bg-white dark:bg-[#111827] shadow-xl rounded-xl p-8 space-y-6">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+      <nav className="bg-white dark:bg-gray-800 shadow-md">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center py-4">
+            <Link href="/" className="text-2xl font-bold">
+              Resume Tailor
+            </Link>
+            <div className="space-x-4">
+              <Link href="/dashboard">Dashboard</Link>
+              <Link href="/login">Login</Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <main className="container mx-auto p-4">
         {children}
-      </div>
+      </main>
     </div>
   );
 }
