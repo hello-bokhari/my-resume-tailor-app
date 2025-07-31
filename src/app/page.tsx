@@ -3,17 +3,16 @@ import Link from 'next/link';
 
 export default function HomePage() {
   return (
-    <div className="container mx-auto p-4 text-center">
-      <h1 className="text-4xl font-bold mb-4">AI-Powered Resume Tailor</h1>
-      <p className="text-lg mb-8">Tailor your resume to any job description in seconds.</p>
-      <div className="space-x-4">
-        <Link href="/login" className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700">
-          Login
-        </Link>
-        <Link href="/dashboard" className="bg-gray-600 text-white px-6 py-3 rounded hover:bg-gray-700">
-          Dashboard
-        </Link>
-      </div>
+    <div className="text-center py-20 px-6">
+      <h1 className="text-5xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
+        Your Dream Job Awaits
+      </h1>
+      <p className="text-xl mb-8 text-gray-300 max-w-2xl mx-auto">
+        Effortlessly tailor your resume to any job description and land more interviews. Our AI-powered tool helps you stand out from the competition.
+      </p>
+      <Link href="/dashboard" className="bg-purple-600 text-white font-bold px-8 py-4 rounded-full hover:bg-purple-700 transition-transform transform hover:scale-105">
+        Get Started Now
+      </Link>
     </div>
   );
 }

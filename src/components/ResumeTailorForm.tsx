@@ -1,3 +1,4 @@
+
 "use client";
 import { useState } from 'react';
 
@@ -38,37 +39,39 @@ export default function ResumeTailorForm() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto flex flex-col gap-6">
-      <h1 className="text-2xl font-bold">🎯 Resume Tailor</h1>
-      <textarea
-        className="p-4 border rounded h-40"
-        placeholder="Paste your resume here..."
-        value={resume}
-        onChange={(e) => setResume(e.target.value)}
-      />
-      <textarea
-        className="p-4 border rounded h-40"
-        placeholder="Paste the job description here..."
-        value={jobDesc}
-        onChange={(e) => setJobDesc(e.target.value)}
-      />
+    <div className="max-w-4xl mx-auto bg-white/10 backdrop-blur-md shadow-lg rounded-lg p-8 space-y-8">
+      <h1 className="text-4xl font-bold text-center text-white">🎯 Resume Tailor</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <textarea
+          className="w-full p-4 bg-white/20 rounded-md border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-400 transition h-64 resize-none"
+          placeholder="Paste your resume here..."
+          value={resume}
+          onChange={(e) => setResume(e.target.value)}
+        />
+        <textarea
+          className="w-full p-4 bg-white/20 rounded-md border border-white/30 focus:outline-none focus:ring-2 focus:ring-purple-400 transition h-64 resize-none"
+          placeholder="Paste the job description here..."
+          value={jobDesc}
+          onChange={(e) => setJobDesc(e.target.value)}
+        />
+      </div>
       <button
         onClick={handleSubmit}
         disabled={loading}
-        className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+        className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-4 rounded-md hover:from-purple-600 hover:to-pink-600 transition-transform transform hover:scale-105 disabled:opacity-50"
       >
-        {loading ? 'Tailoring...' : 'Tailor My Resume'}
+        {loading ? 'Tailoring Your Resume...' : 'Tailor My Resume'}
       </button>
       {output && (
-        <div className="p-4 bg-white dark:bg-gray-900 border rounded whitespace-pre-wrap">
-          <h2 className="font-semibold mb-2">🔧 Tailored Output</h2>
-          <pre>{output}</pre>
+        <div className="bg-white/20 backdrop-blur-md shadow-lg rounded-lg p-8 space-y-4">
+          <h2 className="text-3xl font-bold text-center text-white">🔧 Tailored Output</h2>
+          <div className="whitespace-pre-wrap p-4 bg-white/10 rounded-md max-h-96 overflow-y-auto">{output}</div>
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 mt-4"
+            className="w-full bg-gradient-to-r from-green-500 to-teal-500 text-white font-bold py-3 rounded-md hover:from-green-600 hover:to-teal-600 transition-transform transform hover:scale-105 disabled:opacity-50"
           >
-            {isSaving ? 'Saving...' : 'Save Resume'}
+            {isSaving ? 'Saving Your Resume...' : 'Save Resume'}
           </button>
         </div>
       )}
