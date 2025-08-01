@@ -1,18 +1,18 @@
-
-import Link from 'next/link';
+// src/app/page.tsx
+import Link from "next/link";
 
 export default function HomePage() {
   return (
-    <div className="text-center py-20 px-6">
-      <h1 className="text-5xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
-        Your Dream Job Awaits
-      </h1>
-      <p className="text-xl mb-8 text-gray-300 max-w-2xl mx-auto">
-        Effortlessly tailor your resume to any job description and land more interviews. Our AI-powered tool helps you stand out from the competition.
+    <main className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-purple-300 to-indigo-400 text-white text-center px-4">
+      <h1 className="text-4xl font-bold mb-4">Mental Health Tracker</h1>
+      <p className="mb-8 text-lg max-w-xl">
+        Track your emotions, journal your thoughts, and receive personalized insights powered by Gemini AI.
       </p>
-      <Link href="/dashboard" className="bg-purple-600 text-white font-bold px-8 py-4 rounded-full hover:bg-purple-700 transition-transform transform hover:scale-105">
-        Get Started Now
+      <Link href="/journal">
+        <button className="px-6 py-3 bg-white text-indigo-600 font-semibold rounded-full shadow hover:scale-105 transition">
+          Start Journaling
+        </button>
       </Link>
-    </div>
+    </main>
   );
 }
