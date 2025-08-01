@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,9 +30,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-purple-100 to-white min-h-screen text-gray-900`}
       >
-        <nav className="bg-white shadow-md px-6 py-4 flex justify-between items-center">
-          <h1 className="text-xl font-bold text-purple-700">🧠 Nexium</h1>
-          <div className="space-x-4">
+        <nav className="bg-white shadow-md px-6 py-4 flex justify-between items-center border-b border-purple-200">
+          <Link href="/..">
+          <h1 className="text-xl font-bold text-purple-700">NeuralNote</h1>
+          </Link>
+          <div className="flex gap-4">
             <Link
               href="/journal"
               className="text-purple-600 hover:text-purple-800 font-medium transition"
@@ -43,6 +46,12 @@ export default function RootLayout({
               className="text-purple-600 hover:text-purple-800 font-medium transition"
             >
               Therapist
+            </Link>
+            <Link
+              href="/history"
+              className="text-purple-600 hover:text-purple-800 font-medium transition"
+            >
+              History
             </Link>
           </div>
         </nav>

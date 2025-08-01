@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { createClient } from '@supabase/supabase-js';
+
 
 export default function JournalPage() {
   const [entry, setEntry] = useState('');
@@ -8,28 +10,49 @@ export default function JournalPage() {
   const [response, setResponse] = useState('');
 
   const handleSubmit = async () => {
-    if (!entry.trim()) return;
-    setLoading(true);
-    setResponse('');
-    try {
-      const res = await fetch('/api/gemini', {
-        method: 'POST',
-        body: JSON.stringify({ entry }),
-      });
-      const data = await res.json();
-      setResponse(data.reply);
+  if (!entry.trim()) return;
+  setLoading(true);
+  setResponse('');
 
-      // Save to session storage
-      const today = new Date().toLocaleDateString();
-      const newEntry = { date: today, entry, response: data.reply };
-      const existing = JSON.parse(sessionStorage.getItem("journalHistory") || "[]");
-      sessionStorage.setItem("journalHistory", JSON.stringify([newEntry, ...existing]));
-    } catch {
-      setResponse('Something went wrong. Please try again.');
-    } finally {
-      setLoading(false);
+  try {
+    // 1. Call Gemini API
+    const res = await fetch('/api/gemini', {
+      method: 'POST',
+      body: JSON.stringify({ entry }),
+    });
+    const data = await res.json();
+    setResponse(data.reply);
+
+    // 2. Get current Supabase user
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      alert("You must be logged in to save entries.");
+      return;
     }
-  };
+
+    // 3. Insert into Supabase DB
+    const { error } = await supabase.from('journal_entries').insert([
+      {
+        user_id: user.id,
+        content: entry,
+        ai_response: data.reply,
+      },
+    ]);
+
+    if (error) {
+      console.error('Insert error:', error.message);
+    }
+  } catch (err) {
+    console.error(err);
+    setResponse('Something went wrong. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-purple-100 via-purple-200 to-white py-10 px-4">

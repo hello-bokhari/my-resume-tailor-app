@@ -8,11 +8,20 @@ export default function HomePage() {
       <p className="mb-8 text-lg max-w-xl">
         Track your emotions, journal your thoughts, and receive personalized insights powered by Gemini AI.
       </p>
-      <Link href="/journal">
-        <button className="px-6 py-3 bg-white text-indigo-600 font-semibold rounded-full shadow hover:scale-105 transition">
-          Start Journaling
-        </button>
-      </Link>
+
+      <div className="flex gap-4">
+        <Link href="/journal">
+          <button className="px-6 py-3 bg-white text-indigo-600 font-semibold rounded-full shadow hover:scale-105 transition">
+            Start Journaling
+          </button>
+        </Link>
+
+        <Link href="/auth">
+          <button className="px-6 py-3 border border-white text-white font-semibold rounded-full hover:bg-white hover:text-indigo-600 transition">
+            Login
+          </button>
+        </Link>
+      </div>
     </main>
   );
 }
