@@ -1,10 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import { supabase } from '@/lib/supabase';
 import { createClient } from '@supabase/supabase-js';
+import { useUserRedirect } from '@/hooks/useUserRedirect';
 
 
 export default function JournalPage() {
+  useUserRedirect(true);
   const [entry, setEntry] = useState('');
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState('');

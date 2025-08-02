@@ -2,8 +2,10 @@
 
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import { useUserRedirect } from '@/hooks/useUserRedirect';
 
 export default function AuthPage() {
+  useUserRedirect(false);
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
 

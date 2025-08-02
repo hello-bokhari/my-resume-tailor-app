@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import { useUserRedirect } from '@/hooks/useUserRedirect';
 
 interface JournalEntry {
   id: string;
@@ -12,6 +13,7 @@ interface JournalEntry {
 }
 
 export default function HistoryPage() {
+  useUserRedirect(true);
   const router = useRouter();
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [loading, setLoading] = useState(true);

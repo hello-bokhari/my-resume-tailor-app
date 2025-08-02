@@ -1,8 +1,9 @@
 'use client';
-
+import { useUserRedirect } from '@/hooks/useUserRedirect';
 import { useState } from 'react';
 
 export default function TherapistPage() {
+  useUserRedirect(true);
   const [messages, setMessages] = useState<string[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
